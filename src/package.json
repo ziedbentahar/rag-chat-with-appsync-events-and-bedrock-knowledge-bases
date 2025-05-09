@@ -1,5 +1,5 @@
 {
-  "name": "gen-ai-x-architecture-workshop",
+  "name": "rag-chat-with-appsync-events-and-bedrock-knowledge-bases",
   "type": "module",
   "scripts": {
     "bundle": "npm run bundle:handlers",
@@ -24,21 +24,13 @@
     "@aws-lambda-powertools/event-handler": "2.19.0-alpha",
     "@aws-sdk/client-appsync": "^3.799.0",
     "@aws-sdk/client-bedrock-agent-runtime": "^3.800.0",
-    "@aws-sdk/client-kinesis": "^3.738.0",
     "@aws-sdk/client-rds-data": "^3.799.0",
     "@aws-sdk/client-secrets-manager": "^3.799.0",
-    "@aws-sdk/client-sns": "^3.758.0",
-    "@aws-sdk/client-timestream-query": "^3.758.0",
-    "@aws-sdk/client-timestream-write": "^3.758.0",
     "@aws-sdk/credential-provider-node": "^3.806.0",
     "@hono/node-server": "^1.13.7",
-    "@hono/zod-validator": "^0.4.2",
     "@smithy/node-http-handler": "^4.0.3",
     "@smithy/protocol-http": "^5.1.0",
     "@smithy/signature-v4": "^5.1.0",
-    "hono": "^4.6.20",
-    "hono-openapi": "^0.3.1",
-    "zod": "^3.24.1",
-    "zod-openapi": "^4.2.2"
+    "zod": "^3.24.1"
   }
 }

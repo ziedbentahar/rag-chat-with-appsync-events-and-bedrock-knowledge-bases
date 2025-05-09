@@ -1,0 +1,44 @@
+{
+  "name": "gen-ai-x-architecture-workshop",
+  "type": "module",
+  "scripts": {
+    "bundle": "npm run bundle:handlers",
+    "bundle:handlers": "node esbuild.config.mjs"
+  },
+  "devDependencies": {
+    "@tsconfig/node22": "^22.0.0",
+    "@types/aws-lambda": "^8.10.147",
+    "@types/node": "^22.10.5",
+    "aws-lambda": "^1.0.7",
+    "esbuild": "^0.21.4",
+    "eslint-config-prettier": "^9.1.0",
+    "glob": "^11.0.1",
+    "npm-run-all2": "^6.2.0",
+    "prettier": "^3.4.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.19.1"
+  },
+  "dependencies": {
+    "@aws-crypto/sha256-browser": "^5.2.0",
+    "@aws-lambda-powertools/event-handler": "2.19.0-alpha",
+    "@aws-sdk/client-appsync": "^3.799.0",
+    "@aws-sdk/client-bedrock-agent-runtime": "^3.800.0",
+    "@aws-sdk/client-kinesis": "^3.738.0",
+    "@aws-sdk/client-rds-data": "^3.799.0",
+    "@aws-sdk/client-secrets-manager": "^3.799.0",
+    "@aws-sdk/client-sns": "^3.758.0",
+    "@aws-sdk/client-timestream-query": "^3.758.0",
+    "@aws-sdk/client-timestream-write": "^3.758.0",
+    "@aws-sdk/credential-provider-node": "^3.806.0",
+    "@hono/node-server": "^1.13.7",
+    "@hono/zod-validator": "^0.4.2",
+    "@smithy/node-http-handler": "^4.0.3",
+    "@smithy/protocol-http": "^5.1.0",
+    "@smithy/signature-v4": "^5.1.0",
+    "hono": "^4.6.20",
+    "hono-openapi": "^0.3.1",
+    "zod": "^3.24.1",
+    "zod-openapi": "^4.2.2"
+  }
+}

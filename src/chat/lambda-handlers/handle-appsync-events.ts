@@ -1,20 +1,12 @@
 import { AppSyncEventsResolver, UnauthorizedException } from "@aws-lambda-powertools/event-handler/appsync-events";
-import {
-    BedrockAgentRuntimeClient,
-    RetrieveAndGenerateCommand,
-    RetrieveAndGenerateStreamCommand,
-} from "@aws-sdk/client-bedrock-agent-runtime";
-import { AppSyncClient } from "@aws-sdk/client-appsync";
+import { BedrockAgentRuntimeClient, RetrieveAndGenerateCommand } from "@aws-sdk/client-bedrock-agent-runtime";
 import { HttpRequest } from "@smithy/protocol-http";
 import { SignatureV4 } from "@smithy/signature-v4";
 import { Sha256 } from "@aws-crypto/sha256-browser";
 import { defaultProvider } from "@aws-sdk/credential-provider-node";
 
-const appSyncClient = new AppSyncClient({ region: process.env.AWS_REGION });
-
 import type { Context } from "aws-lambda";
 import { z } from "zod";
-import { channel } from "diagnostics_channel";
 
 const app = new AppSyncEventsResolver();
 const bedrockClient = new BedrockAgentRuntimeClient({ region: process.env.AWS_REGION });
@@ -27,54 +19,11 @@ const messageSchema = z.object({
     sessionId: z.string().optional(),
 });
 
-// app.onPublish("/chat/*", async (payload, event) => {
-//     const identity = event.identity ? (event.identity as { sub: string; username: string }) : null;
-//     const sub = identity?.sub;
-
-//     if (!sub || (event.info.channel.segments.length != 2 && !event.info.channel.path.endsWith(`/${sub}`))) {
-//         throw new UnauthorizedException("You canno't publish to this channel");
-//     }
-
-//     const message = messageSchema.safeParse(payload);
-
-//     if (!message.success) {
-//         return {
-//             result: { text: "I don't understand what you mean, your message format seems invalid" },
-//             error: "Invalid message payload",
-//         };
-//     }
-
-//     const { content, sessionId } = message.data;
-
-//     const result = await bedrockClient.send(
-//         new RetrieveAndGenerateCommand({
-//             input: {
-//                 text: content,
-//             },
-
-//             retrieveAndGenerateConfiguration: {
-//                 type: "KNOWLEDGE_BASE",
-//                 knowledgeBaseConfiguration: {
-//                     knowledgeBaseId: process.env.KB_ID,
-//                     modelArn: process.env.KB_MODEL_ARN,
-//                 },
-//             },
-//             sessionId,
-//         })
-//     );
-
-//     return {
-//         processed: true,
-//         result: result.output,
-//         sessionId: result.sessionId,
-//     };
-// });
-
 app.onPublish("/chat/request/*", async (payload, event) => {
     const identity = event.identity ? (event.identity as { sub: string; username: string }) : null;
     const sub = identity?.sub;
 
-    if (!sub || (event.info.channel.segments.length != 2 && !event.info.channel.path.endsWith(`/${sub}`))) {
+    if (!sub || (event.info.channel.segments.length != 3 && !event.info.channel.path.endsWith(`/${sub}`))) {
         throw new UnauthorizedException("You cannot publish to this channel");
     }
 
@@ -105,7 +54,9 @@ app.onPublish("/chat/request/*", async (payload, event) => {
         })
     );
 
-    const signedRequest = await signRequest(`https://${process.env.EVENTS_API_DNS}/event`, "POST", {
+    const eventsEndpoint = `https://${process.env.EVENTS_API_DNS}/event`;
+
+    const { method, headers, body } = await signRequest(eventsEndpoint, "POST", {
         channel: `/chat/responses/${sub}`,
         events: [
             JSON.stringify({
@@ -115,10 +66,10 @@ app.onPublish("/chat/request/*", async (payload, event) => {
         ],
     });
 
-    await fetch(`https://${process.env.EVENTS_API_DNS}/event`, {
-        method: signedRequest.method,
-        headers: signedRequest.headers,
-        body: signedRequest.body,
+    await fetch(eventsEndpoint, {
+        method,
+        headers,
+        body,
     });
 
     return {

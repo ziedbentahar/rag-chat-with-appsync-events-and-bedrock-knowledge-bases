@@ -86,7 +86,7 @@ app.onSubscribe("/chat/responses/*", (payload) => {
     }
 });
 
-const signRequest = async (url: string, method: string, body?: any) => {
+const signRequest = async (url: string, method: "POST", body?: unknown) => {
     const signer = new SignatureV4({
         credentials: defaultProvider(),
         region: process.env.AWS_REGION!,

@@ -77,6 +77,7 @@ export const handler = async (event: {
     }
 
     if (event.tf.action === "delete") {
+        // resource will be deleted when the appsync api will be deleted by terraform
         return;
     }
 };
